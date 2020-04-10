@@ -398,13 +398,13 @@ public class WarehouseBook {
         
         if (bit == 2){
           if(root.left != null || root.right != null){
-            book = book + "" + root.record.getProductID() + root.record.getQuantity() + " ";
+            book = book + "" + root.record.getProductID() + (root.record.getQuantity() > 9 ? root.record.getQuantity(): "0" + root.record.getQuantity()) + " ";
           }else{
-            book = book + "" + root.record.getProductID() + root.record.getQuantity() + ")"; 
+            book = book + "" + root.record.getProductID() + (root.record.getQuantity() > 9 ? root.record.getQuantity(): "0" + root.record.getQuantity()) + ")"; 
           }
           
         }else{
-          book = book +"("+ root.record.getProductID()+ root.record.getQuantity() + " ";
+          book = book +"("+ root.record.getProductID()+ (root.record.getQuantity() > 9 ? root.record.getQuantity(): "0" + root.record.getQuantity()) + " ";
         }
 
         //---------------------------------------------------
@@ -460,12 +460,40 @@ public class WarehouseBook {
       // System.out.println(stack.size());
    }
 
+   public boolean isNumeric(String strNum) {
+    if (strNum == null) {
+        return false;
+    }
+    try {
+        int number = Integer.parseInt(strNum);
+    } catch (NumberFormatException nfe) {
+        return false;
+    }
+    return true;
+}
+
     public void bookFormatComplete(){
         // stack.push(")");
         //IF TOGGLE NULL THEN WRITE HERE!
+
+        if (root.record.getProductID() == -1)
+            root = null;
         bookFormat(root,0);
         int countClose = 0;
         int countOpen = 0;
+        String[] tempBook = book.split("");
+        book ="";
+        for (int i = 0; i < tempBook.length; i++){
+            if(tempBook[i].equals(")") && (i != tempBook.length - 1)){
+                 if (isNumeric(tempBook[i+1])){
+                    book = book + tempBook[i] + " ";
+                  }
+            }else{
+                    book = book + tempBook[i];
+                  }
+             
+        }
+        System.out.println("book herer" +book + "book herer");
         for (int i = 0; i < book.length(); i++){
           if(book.charAt(i) == '(')
             countOpen ++;
@@ -476,8 +504,10 @@ public class WarehouseBook {
         if (cmp > 0){
           for (int i = 0 ; i < cmp; i ++)
             book = book + ")";
-        }
+         }
   
+        
+        
         
       
         
@@ -535,7 +565,7 @@ public class WarehouseBook {
      if (root == null)  // use toggle true false in bookFormatComplete()
        { 
             root = new WarehouseNode();
-            root.record = new ProductRecord(0,0);
+            root.record = new ProductRecord(-1,0);
         
            isNull = true;
             
@@ -798,7 +828,7 @@ public class WarehouseBook {
                  // process
             addSearch(root,Integer.parseInt(IdAndValue[0]),Integer.parseInt(IdAndValue[1]));  // the action refer doing add quantity   
             if(isNull){
-              deleteId(0);
+              deleteId(-1);
               isNull = false;
             }             
                   
@@ -819,7 +849,7 @@ public class WarehouseBook {
                  // process
             subtractSearch(root,Integer.parseInt(IdAndValue[0]),Integer.parseInt(IdAndValue[1]), closeid); // the action refer doing subtract quantity  
             if(isNull){
-              deleteId(0);
+              deleteId(-1);
               isNull = false;
             }     
             break;
@@ -828,7 +858,7 @@ public class WarehouseBook {
           {
             eventsThird();
             if(isNull){
-              deleteId(0);
+              deleteId(-1);
               isNull = false;
             }     
             break;
@@ -837,7 +867,7 @@ public class WarehouseBook {
           {
             eventsFourth();
             if(isNull){
-              deleteId(0);
+              deleteId(-1);
               isNull = false;
             }     
             break;
@@ -855,7 +885,7 @@ public class WarehouseBook {
 
             eventsFifth();
             if(isNull){
-              deleteId(0);
+              deleteId(-1);
               isNull = false;
             }     
          	break;
@@ -867,7 +897,7 @@ public class WarehouseBook {
          									// but in metion of assignment required, delete from top top last bot, so height of root minus unit add 1
    											  //	and root has max height.
           if(isNull){
-              deleteId(0);
+              deleteId(-1);
               isNull = false;
             }     
          	break;
